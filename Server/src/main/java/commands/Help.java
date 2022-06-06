@@ -2,7 +2,7 @@ package commands;
 
 import server.Receiver;
 
-public class Help implements Command{
+public class Help implements Command {
 
 	private final Receiver receiver;
 

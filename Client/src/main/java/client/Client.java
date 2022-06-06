@@ -1,3 +1,5 @@
+package client;
+
 import base.City;
 import listening.Request;
 import listening.Response;
@@ -32,7 +34,7 @@ public class Client {
 		System.exit(1);
 	}
 
-	public static Response shipFromClient() { //  Получение ответа от сервера
+	public static Response shipFromServer() { //  Получение ответа от сервера
 		try {
 			ByteBuffer buffer = ByteBuffer.allocate(BUF_SIZE);
 			packet = new DatagramPacket(buffer.array(), buffer.array().length);

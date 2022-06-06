@@ -2,12 +2,13 @@ package commands;
 
 import server.Receiver;
 
-public class ExecuteScript implements Command{
+public class RemoveAllByGovernment implements Command {
 
 	private final Receiver receiver;
 
-	public ExecuteScript(Receiver receiver) {
+	public RemoveAllByGovernment(Receiver receiver) {
 		this.receiver = receiver;
 
 	}
+
 }

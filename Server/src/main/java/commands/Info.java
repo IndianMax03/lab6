@@ -2,11 +2,13 @@ package commands;
 
 import server.Receiver;
 
-public class Clear implements Command{
+public class Info implements Command {
+
 	private final Receiver receiver;
 
-	public Clear(Receiver receiver) {
+	public Info(Receiver receiver) {
 		this.receiver = receiver;
 
 	}
+
 }

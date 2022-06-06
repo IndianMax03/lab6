@@ -2,11 +2,11 @@ package commands;
 
 import server.Receiver;
 
-public class RemoveAllByGovernment implements Command{
+public class PrintDescending implements Command {
 
 	private final Receiver receiver;
 
-	public RemoveAllByGovernment(Receiver receiver) {
+	public PrintDescending(Receiver receiver) {
 		this.receiver = receiver;
 
 	}

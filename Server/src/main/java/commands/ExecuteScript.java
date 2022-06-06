@@ -2,13 +2,12 @@ package commands;
 
 import server.Receiver;
 
-public class FilterStartsWithName implements Command{
+public class ExecuteScript implements Command {
 
 	private final Receiver receiver;
 
-	public FilterStartsWithName(Receiver receiver) {
+	public ExecuteScript(Receiver receiver) {
 		this.receiver = receiver;
 
 	}
-
 }
