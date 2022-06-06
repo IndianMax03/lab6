@@ -1,5 +1,6 @@
 package commands;
 
+import listening.Request;
 import server.Receiver;
 
 public class Clear implements Command {
@@ -8,5 +9,15 @@ public class Clear implements Command {
 	public Clear(Receiver receiver) {
 		this.receiver = receiver;
 
+	}
+
+	@Override
+	public void execute(Request request) {
+
+	}
+
+	@Override
+	public String getHelp() {
+		return null;
 	}
 }

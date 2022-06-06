@@ -1,5 +1,6 @@
 package commands;
 
+import listening.Request;
 import server.Receiver;
 
 public class FilterStartsWithName implements Command {
@@ -11,4 +12,13 @@ public class FilterStartsWithName implements Command {
 
 	}
 
+	@Override
+	public void execute(Request request) {
+
+	}
+
+	@Override
+	public String getHelp() {
+		return null;
+	}
 }

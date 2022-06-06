@@ -12,7 +12,7 @@ import java.nio.channels.DatagramChannel;
 
 public class Server {
 
-	private static final int PORT = 666;
+	private static final int PORT = 8080;
 	private static final int BUF_SIZE = 32768;
 	private static DatagramChannel channel;
 

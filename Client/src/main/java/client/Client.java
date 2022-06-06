@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 public class Client {
 
-	private static final int PORT = 666;
+	private static final int PORT = 8080;
 	private static final int BUF_SIZE = 32768;
 	private static DatagramSocket socket;
 	private static DatagramPacket packet;

@@ -1,5 +1,6 @@
 package commands;
 
+import listening.Request;
 import server.Receiver;
 
 public class RemoveGreater implements Command {
@@ -11,4 +12,13 @@ public class RemoveGreater implements Command {
 
 	}
 
+	@Override
+	public void execute(Request request) {
+
+	}
+
+	@Override
+	public String getHelp() {
+		return null;
+	}
 }

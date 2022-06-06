@@ -1,5 +1,6 @@
 package commands;
 
+import listening.Request;
 import server.Receiver;
 
 public class ExecuteScript implements Command {
@@ -9,5 +10,15 @@ public class ExecuteScript implements Command {
 	public ExecuteScript(Receiver receiver) {
 		this.receiver = receiver;
 
+	}
+
+	@Override
+	public void execute(Request request) {
+
+	}
+
+	@Override
+	public String getHelp() {
+		return null;
 	}
 }

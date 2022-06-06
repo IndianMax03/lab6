@@ -14,7 +14,7 @@ public class AddIfMin implements Command {
 
 	@Override
 	public void execute(Request request) {
-		return null;
+		return;
 	}
 
 	@Override
