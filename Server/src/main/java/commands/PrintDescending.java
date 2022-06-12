@@ -1,6 +1,7 @@
 package commands;
 
 import listening.Request;
+import listening.Response;
 import server.Receiver;
 
 public class PrintDescending implements Command {
@@ -13,12 +14,13 @@ public class PrintDescending implements Command {
 	}
 
 	@Override
-	public void execute(Request request) {
-
+	public Response execute(Request request) {
+		receiver.clearResponse();
+		return receiver.printDescending();
 	}
 
 	@Override
 	public String getHelp() {
-		return null;
+		return "Введите print_descending, чтобы вывести элементы коллекции в порядке убывания";
 	}
 }

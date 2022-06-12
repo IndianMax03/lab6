@@ -5,6 +5,7 @@ import base.Government;
 import commands.Command;
 import fileworker.WorkWithFile;
 import input.Adder;
+import listening.Response;
 
 import java.time.ZonedDateTime;
 import java.util.Iterator;
@@ -15,6 +16,8 @@ import java.util.TreeSet;
  */
 public class Receiver {
 
+	private TreeSet<City> collection;
+	private Response response;
 	private final ZonedDateTime creationDate;
 
 
@@ -22,78 +25,81 @@ public class Receiver {
 		creationDate = ZonedDateTime.now();
 	}
 
-	public String help(Invoker invoker){
-		StringBuilder commandsString = new StringBuilder();
-		for (Command command : invoker.getCommandMap().values()){
-			commandsString.append(command.getHelp()).append("\n");
-		}
-		return commandsString.toString();
-	}
-
 	public String exit(){
 		System.out.println("Спасибо за работу, до свидания!");
 		return null;
 	}
 
-	public String clear(TreeSet<City> collection){
-		collection.clear();
-		return "Коллекция успешно очищена.";
-	}
-
-	public String add(TreeSet<City> collection){
-		return Adder.addCity(collection);
-	}
-
-	public String addIfMin(TreeSet<City> collection){
-		if (collection.isEmpty()){
-			return "Коллекция пуста. Создайте хотя бы один элемент, чтобы использовать эту команду.";
+	public Response clear(){
+		if (!collection.isEmpty()){
+			collection.clear();
+			response.setMessage("Коллекция успешно очищена.");
+		} else {
+			response.setMessage("Колллекция уже пуста.");
 		}
-		System.out.println("Следующий введённый город будет добавлен в колекцию в случае, если его поле population будет " +
-				"наименьшим в коллекции.");
-		System.out.println("На данный момент в коллекции наименьшее значение поля population = " + collection.first().getPopulation());
-		return Adder.addCityIfMin(collection);
+		return response;
 	}
 
-	public String show(TreeSet<City> collection){
+	public Response add(City city){
+		if (!collection.add(city)) {
+			response.setMessage("Город добавить не удалось");
+		} else {
+			response.setMessage("Город успешно добавлен в коллецию.");
+		}
+		return response;
+	}
+
+	public Response addIfMin(City city){
+		if (collection.isEmpty()){
+			response.setMessage("Коллекция пуста. Создайте хотя бы один элемент, чтобы использовать эту команду.");
+		}
+		if (city.getPopulation() < collection.first().getPopulation()){
+			collection.add(city);
+			response.setMessage("Город успешно добавлен в коллекцию.");
+		} else {
+			response.setMessage("Город не удалось добавить. Его значение поля population превосходит наименьшее.");
+		}
+		return response;
+	}
+
+	public Response show(){
 		if (collection.isEmpty()) {
-			return "Коллекция пуста.";
-		} else {
-			System.out.println("Элементы коллекции в строковом предствлении: ");
-			StringBuilder s = new StringBuilder();
-			for (City city : collection){
-				s.append(city.cityToShow());
-			}
-			return s.toString();
+			response.setMessage("Коллекция пуста.");
+			return response;
 		}
+		response.setMessage("Элементы коллекции в строковом представлении:");
+		response.setAnswer(
+				(String[]) collection.stream()
+				.map(City::cityToShow)
+				.toArray()
+		);
+		return response;
 	}
 
-	public String filterStartsWithName(TreeSet<City> collection, String name){
-		System.out.println("Будут выведены элементы коллекции, значение поля name которых начинается с подстроки " + name + ":");
-		StringBuilder namesString = new StringBuilder();
-		for (City city : collection){
-			if (city.getName().startsWith(name)){
-				namesString.append(city).append(", ");
-			}
-		}
-		if (namesString.toString().isEmpty()){
-			return "Элементов с таким условием в коллекции не найдено!";
-		} else {
-			return namesString.deleteCharAt(namesString.length() - 2).toString();
-		}
-	}
-
-	public String printDescending(TreeSet<City> collection){
-		System.out.println("Элементы коллекции в порядке убывания (обратном): ");
+	public Response filterStartsWithName(String filter){
 		if (collection.isEmpty()){
-			return "Коллекция пуста.";
-		} else {
-			StringBuilder descCollection = new StringBuilder();
-			Iterator<City> i = collection.descendingIterator();
-			while (i.hasNext()){
-				descCollection.append(i.next()).append(", ");
-			}
-			return descCollection.deleteCharAt(descCollection.length() - 2).toString();
+			response.setMessage("Коллекция пуста. Команда не может выполниться.");
+			return response;
 		}
+		String[] reaction = (String[]) collection.stream()
+				.filter(city -> city.getName().startsWith(filter))
+				.toArray();
+		response.setMessage("Элементы коллекции, начинающиеся с подстроки: " + filter);
+		response.setAnswer(reaction);
+		return response;
+	}
+
+	public Response printDescending(){
+		if (collection.isEmpty()){
+			response.setMessage("Коллекция пуста.");
+			return response;
+		}
+		response.setMessage("Элементы коллекции в обратном порядке: ");
+		response.setAnswer((String[]) collection.stream()
+					.sorted((city1, city2) -> -city1.compareTo(city2))
+					.toArray()
+		);
+		return response;
 	}
 
 	//  todo Разобраться с терминалом
@@ -105,7 +111,7 @@ public class Receiver {
 //
 //	}
 
-	public String removeAllByGovernment(TreeSet<City> collection, String argument){
+	public Response removeAllByGovernment(String argument){
 
 		for (Government government : Government.values()){
 
@@ -120,80 +126,76 @@ public class Receiver {
 					}
 				}
 				if (flag) {
-					return "Элементы коллекции с заданным условием удалены.";
+					response.setMessage("Элементы коллекции с заданным условием удалены.");
+					return response;
 				} else {
-					return "Элементов коллекции с заданным полем government не найдено.";
+					response.setMessage("Элементов коллекции с заданным полем government не найдено.");
+					return response;
 				}
 			}
 
 		}
-
-		return "Такого поля Government не существует.";
+		response.setMessage("Такого поля Government не существует.");
+		return response;
 	}
 
-	public String removeById(TreeSet<City> collection, String argument){
-		Long id;
-		try {
-			id = Long.parseLong(argument);
-		} catch (NumberFormatException e){
-			id = null;
-		}
-		if (id == null){
-			return "Аргумент id передан неверно.";
-		}
-		String element = "Элемента с данным id не существует.";
+	public Response removeById(String argument){
+		long id = Long.parseLong(argument);
+		boolean flag = false;
 		for (City city : collection){
 			if (city.getId().equals(id)){
-				element = city + " удалён из коллекции.";
+				flag = true;
 				collection.remove(city);
 				break;
 			}
 		}
-		return element;
+		if (!flag){
+			response.setMessage("Города с заданным id не существует.");
+			return response;
+		}
+		response.setMessage("Город с заданным id успешно удалён.");
+		return response;
 	}
 
-	public String removeGreater(TreeSet<City> collection){
-		System.out.println("Создайте элемент.");
-		City delCity = Adder.createCity();
-		collection.removeIf(city -> delCity.compareTo(city) > 0);
-		return "Элементы, меньшие, чем заданный, удалены.";
+	public Response removeGreater(City city){
+		if (collection.isEmpty()){
+			response.setMessage("Коллекция пуста.");
+			return response;
+		}
+		collection.removeIf(sity -> sity.getPopulation() > city.getPopulation());
+		response.setMessage("Элементы коллекции, превышающие заданный, удалены.");
+		return response;
 	}
 
-	public String removeLower(TreeSet<City> collection){
-		System.out.println("Создайте элемент.");
-		City delCity = Adder.createCity();
-		collection.removeIf(city -> delCity.compareTo(city) < 0);
-		return "Элементы, меньшие, чем заданный, удалены.";
+	public Response removeLower(City city){
+		if (collection.isEmpty()){
+			response.setMessage("Коллекция пуста.");
+			return response;
+		}
+		collection.removeIf(sity -> sity.getPopulation() < city.getPopulation());
+		response.setMessage("Элементы коллекции, меньшие чем заданный, удалены.");
+		return response;
 	}
 
 
-	public String info(TreeSet<City> collection){
-		return "Тип коллекции: " + collection.getClass() +
+	public Response info(){
+		response.setMessage("Тип коллекции: " + collection.getClass() +
 				"\nДата инициализации коллекции: " + creationDate +
-				"\nКоличество элементов коллекции: " + collection.size();
+				"\nКоличество элементов коллекции: " + collection.size());
+		return response;
 	}
 
-	public String updateId(TreeSet<City> collection, String idArgument){
-		Long id;
-		try {
-			id = Long.parseLong(idArgument);
-		} catch (NumberFormatException e){
-			id = null;
+	public Response updateId(String idArgument, City city){
+		long id = Long.parseLong(idArgument);
+		long before = collection.size();
+		collection.removeIf(sity -> city.getId().equals(id));
+		long after = collection.size();
+		if (before == after){
+			response.setMessage("Элемента с заданным id не существует. Город не будет добавлен.");
+			return response;
 		}
-		if (id == null){
-			return "Аргумент id передан неверно.";
-		}
-		String result = "Элемента с данным id не существует.";
-		for (City city : collection){
-			if (city.getId().equals(id)){
-				System.out.println("Будет произведена замена элемента " + city);
-				City newCity = Adder.createCity();
-				newCity.setId(id);
-				collection.remove(city); collection.add(newCity);
-				result = "Элемент успешно изменен. Его поле id останется прежним.";
-			}
-		}
-		return result;
+		city.setId(id);
+		return add(city);
 	}
 
 	public String save(TreeSet<City> collection){
@@ -202,6 +204,11 @@ public class Receiver {
 
 		return worker.writeInFile(collection);
 
+	}
+
+	public void clearResponse(){
+		this.response.setMessage(null);
+		this.response.setAnswer(null);
 	}
 
 }

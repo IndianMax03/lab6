@@ -1,6 +1,7 @@
 package commands;
 
 import listening.Request;
+import listening.Response;
 import server.Receiver;
 
 public class Show implements Command {
@@ -13,12 +14,13 @@ public class Show implements Command {
 	}
 
 	@Override
-	public void execute(Request request) {
-
+	public Response execute(Request request) {
+		receiver.clearResponse();
+		return receiver.show();
 	}
 
 	@Override
 	public String getHelp() {
-		return null;
+		return "Введите show, чтобы вывести в стандартный поток вывода все элементы коллекции в строковом представлении";
 	}
 }

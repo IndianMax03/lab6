@@ -12,14 +12,14 @@ import java.nio.channels.DatagramChannel;
 
 public class Server {
 
-	private static final int PORT = 8080;
+	private static final int PORT = 9000;
 	private static final int BUF_SIZE = 32768;
 	private static DatagramChannel channel;
 
 	static { //  Статический блок, вызывается при инициализации класса
 		try{
-			InetSocketAddress address = new InetSocketAddress(PORT);
-			channel = DatagramChannel.open();
+			channel = DatagramChannel.open(); //  Открыли канал
+			channel.bind(new InetSocketAddress(PORT)); //  Привязали канал к порту
 			channel.configureBlocking(false); //  Неблокирующий режим
 			System.out.println("Сервер начал свою работу.");
 		} catch (IOException ex){
@@ -27,55 +27,40 @@ public class Server {
 		}
 	}
 
-	public static Request shipToClient(){
-		try{
-			ByteBuffer buffer = ByteBuffer.allocate(BUF_SIZE);
-			SocketAddress address = channel.receive(buffer);
-			if (address != null){
-				System.out.println("Сервер получил запрос на подключение от клиента: " + address);
-				ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(buffer.array()));
-				Request request = (Request) ois.readObject();
-				request.client = address;
-				return request;
+	public Request recieve(){
+		try {
+			ByteBuffer buffer = ByteBuffer.allocate(BUF_SIZE); //  Буфер, в который пишется входной поток байтов
+			SocketAddress clientAddress = channel.receive(buffer); //  Адрес возврата
+
+			if (clientAddress == null){
+				return null;
 			}
-		} catch (IOException ex) {
-			System.out.println("Сервером получена невалидная информация.");
-		} catch (ClassNotFoundException ex){
-			System.out.println("Не удалось восстановить объект.");
-		}
-		return null;
-	}
 
-	public static void swim(Response response, SocketAddress address){
-		try(ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		    ObjectOutputStream oos = new ObjectOutputStream(baos))
-		{
-			oos.writeObject(response); //  Сериализуем response
-			channel.send(ByteBuffer.wrap(baos.toByteArray()), address); //  Отправка буфера на клиент
-			System.out.println("Сервер отправил ответ на клиент: " + address);
+			ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(buffer.array())); //  Для десереализации
+			Request request = (Request) ois.readObject();
+			request.setClientAdress(clientAddress);
+
+			return request;
 		} catch (IOException e) {
-			System.out.println("Ответ от сервера не может быть отправлен на клиент: " + address);
+			e.printStackTrace();
+			return null;
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 
-	public static void askAnObject(SocketAddress address, Class<? extends Serializable> clazz){
-		Response response = new Response();
-		response.out = "swim";
-		response.clazz = clazz;
+	public void send(Response response, SocketAddress clientAdress){
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try{
 
-		Server.swim(response, address);
-	}
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			oos.writeObject(response);
+			channel.send(ByteBuffer.wrap(baos.toByteArray()), clientAdress);
 
-	public static void talk(SocketAddress adress, String phrase){ //  Разговор
-
-		if (adress == null){ //  Разговор с самим собой
-			System.out.println(phrase);
-			return;
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-
-		Response response = new Response();
-		response.out = phrase;
-		Server.swim(response, adress); //  Разговор с клиентом
 	}
 
 }

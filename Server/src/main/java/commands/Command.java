@@ -1,10 +1,11 @@
 package commands;
 
 import listening.Request;
+import listening.Response;
 
 public interface Command {
 
-	void execute(Request request);
+	Response execute(Request request);
 
 	String getHelp();
 

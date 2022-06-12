@@ -1,6 +1,7 @@
 package commands;
 
 import listening.Request;
+import listening.Response;
 import server.Receiver;
 
 public class FilterStartsWithName implements Command {
@@ -13,12 +14,14 @@ public class FilterStartsWithName implements Command {
 	}
 
 	@Override
-	public void execute(Request request) {
-
+	public Response execute(Request request) {
+		receiver.clearResponse();
+		return receiver.filterStartsWithName(request.getArgument());
 	}
 
 	@Override
 	public String getHelp() {
-		return null;
+		return "Введите filter_starts_with_name name, чтобы вывести элементы, значение поля name которых начинается с " +
+				"заданной подстроки";
 	}
 }

@@ -1,6 +1,7 @@
 package commands;
 
 import listening.Request;
+import listening.Response;
 import server.Receiver;
 
 public class UpdateId implements Command {
@@ -13,12 +14,13 @@ public class UpdateId implements Command {
 	}
 
 	@Override
-	public void execute(Request request) {
-
+	public Response execute(Request request) {
+		receiver.clearResponse();
+		return receiver.updateId(request.getArgument(), request.getCity());
 	}
 
 	@Override
 	public String getHelp() {
-		return null;
+		return "Введите update id {element}, чтобы обновить значение элемента коллекции, id которого равен заданному";
 	}
 }

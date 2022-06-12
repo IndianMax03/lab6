@@ -1,6 +1,7 @@
 package commands;
 
 import listening.Request;
+import listening.Response;
 import server.Receiver;
 
 public class RemoveLower implements Command {
@@ -13,12 +14,13 @@ public class RemoveLower implements Command {
 	}
 
 	@Override
-	public void execute(Request request) {
-
+	public Response execute(Request request) {
+		receiver.clearResponse();
+		return receiver.removeLower(request.getCity());
 	}
 
 	@Override
 	public String getHelp() {
-		return null;
+		return "Введите remove_lower {element}, чтобы удалить из коллекции все элементы, меньшие, чем заданный";
 	}
 }

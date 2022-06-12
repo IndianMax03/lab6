@@ -1,6 +1,7 @@
 package commands;
 
 import listening.Request;
+import listening.Response;
 import server.Receiver;
 
 public class AddIfMin implements Command {
@@ -13,8 +14,9 @@ public class AddIfMin implements Command {
 	}
 
 	@Override
-	public void execute(Request request) {
-		return;
+	public Response execute(Request request) {
+		receiver.clearResponse();
+		return receiver.addIfMin(request.getCity());
 	}
 
 	@Override

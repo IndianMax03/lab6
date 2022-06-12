@@ -1,6 +1,7 @@
 package commands;
 
 import listening.Request;
+import listening.Response;
 import server.Receiver;
 
 public class Exit implements Command {
@@ -13,12 +14,14 @@ public class Exit implements Command {
 	}
 
 	@Override
-	public void execute(Request request) {
-
+	public Response execute(Request request) {
+		Response response = new Response();
+		response.setMessage("Пока без Exit"); //  todo
+		return response;
 	}
 
 	@Override
 	public String getHelp() {
-		return null;
+		return "Введите exit, чтобы завершить программу (без сохранения в файл)";
 	}
 }

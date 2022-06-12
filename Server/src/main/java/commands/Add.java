@@ -1,6 +1,7 @@
 package commands;
 
 import listening.Request;
+import listening.Response;
 import server.Receiver;
 
 public class Add implements Command {
@@ -13,8 +14,9 @@ public class Add implements Command {
 
 
 	@Override
-	public void execute(Request request) {
-		// todo Остановился на реализации команд. Иду в ресивер
+	public Response execute(Request request) {
+		receiver.clearResponse();
+		return receiver.add(request.getCity());
 	}
 
 	@Override

@@ -4,11 +4,11 @@ import listening.Request;
 import listening.Response;
 import server.Receiver;
 
-public class Info implements Command {
+public class RemoveById implements Command {
 
 	private final Receiver receiver;
 
-	public Info(Receiver receiver) {
+	public RemoveById(Receiver receiver) {
 		this.receiver = receiver;
 
 	}
@@ -16,7 +16,7 @@ public class Info implements Command {
 	@Override
 	public Response execute(Request request) {
 		receiver.clearResponse();
-		return receiver.info();
+		return receiver.removeById(request.getArgument());
 	}
 
 	@Override

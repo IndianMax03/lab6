@@ -1,6 +1,7 @@
 package commands;
 
 import listening.Request;
+import listening.Response;
 import server.Receiver;
 
 public class Clear implements Command {
@@ -12,12 +13,13 @@ public class Clear implements Command {
 	}
 
 	@Override
-	public void execute(Request request) {
-
+	public Response execute(Request request) {
+		receiver.clearResponse();
+		return receiver.clear();
 	}
 
 	@Override
 	public String getHelp() {
-		return null;
+		return "Введите clear, чтобы очистить коллекцию";
 	}
 }
