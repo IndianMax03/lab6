@@ -1,6 +1,8 @@
 package base;
 
-public enum Climate {
+import java.io.Serializable;
+
+public enum Climate implements Serializable {
 
 	HUMIDCONTINENTAL("Влажный континентальный"),
 	SUBARCTIC("Субарктический"),

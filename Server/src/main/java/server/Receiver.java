@@ -3,12 +3,9 @@ package server;
 import base.City;
 import base.Government;
 import commands.Command;
-import fileworker.WorkWithFile;
-import input.Adder;
 import listening.Response;
 
 import java.time.ZonedDateTime;
-import java.util.Iterator;
 import java.util.TreeSet;
 
 /**
@@ -16,8 +13,9 @@ import java.util.TreeSet;
  */
 public class Receiver {
 
-	private TreeSet<City> collection;
-	private Response response;
+	private final long ID = 0;
+	private TreeSet<City> collection = new TreeSet<>();
+	private Response response = new Response();
 	private final ZonedDateTime creationDate;
 
 
@@ -25,7 +23,7 @@ public class Receiver {
 		creationDate = ZonedDateTime.now();
 	}
 
-	public String exit(){
+	public String exit(){ //  todo
 		System.out.println("Спасибо за работу, до свидания!");
 		return null;
 	}
@@ -41,8 +39,10 @@ public class Receiver {
 	}
 
 	public Response add(City city){
+		city.setId(this.ID + collection.size());
+		city.setCreationDate(ZonedDateTime.now());
 		if (!collection.add(city)) {
-			response.setMessage("Город добавить не удалось");
+			response.setMessage("Город добавить не удалось. Коллекция TreeSet не предполагает хранение одинаковых объектов.");
 		} else {
 			response.setMessage("Город успешно добавлен в коллецию.");
 		}
@@ -69,9 +69,9 @@ public class Receiver {
 		}
 		response.setMessage("Элементы коллекции в строковом представлении:");
 		response.setAnswer(
-				(String[]) collection.stream()
+				collection.stream()
 				.map(City::cityToShow)
-				.toArray()
+				.toArray(String[]::new)
 		);
 		return response;
 	}
@@ -81,9 +81,10 @@ public class Receiver {
 			response.setMessage("Коллекция пуста. Команда не может выполниться.");
 			return response;
 		}
-		String[] reaction = (String[]) collection.stream()
+		String[] reaction = collection.stream()
 				.filter(city -> city.getName().startsWith(filter))
-				.toArray();
+				.map(City::toString)
+				.toArray(String[]::new);
 		response.setMessage("Элементы коллекции, начинающиеся с подстроки: " + filter);
 		response.setAnswer(reaction);
 		return response;
@@ -95,10 +96,11 @@ public class Receiver {
 			return response;
 		}
 		response.setMessage("Элементы коллекции в обратном порядке: ");
-		response.setAnswer((String[]) collection.stream()
+		response.setAnswer(( collection.stream()
 					.sorted((city1, city2) -> -city1.compareTo(city2))
-					.toArray()
-		);
+					.map(City::toString)
+					.toArray(String[]::new)
+		));
 		return response;
 	}
 
@@ -112,30 +114,24 @@ public class Receiver {
 //	}
 
 	public Response removeAllByGovernment(String argument){
-
-		for (Government government : Government.values()){
-
-			if (government.toString().equals(argument)){
-
-				boolean flag = false;
-
-				for (City city : collection){
-					if (city.getGovernment().equals(government)){
-						collection.remove(city);
-						flag = true;
-					}
-				}
-				if (flag) {
-					response.setMessage("Элементы коллекции с заданным условием удалены.");
-					return response;
-				} else {
-					response.setMessage("Элементов коллекции с заданным полем government не найдено.");
-					return response;
-				}
-			}
-
+		Government government = null;
+		for (Government gov : Government.values()){
+			if (gov.toString().equals(argument))
+				government = gov;
 		}
-		response.setMessage("Такого поля Government не существует.");
+		if (government == null){
+			response.setMessage("Обнаружена ошибка при попытке удаления. Сервер отказывается обрабатывать.");
+			return response;
+		}
+		long before = collection.size();
+		Government finalGovernment = government;
+		collection.removeIf(city -> city.getGovernment().equals(finalGovernment));
+		long after = collection.size();
+		if (before == after){
+			response.setMessage("В коллекции не найдены подходящие элементы.");
+		} else{
+			response.setMessage("Удаление элементов прошло успешно.");
+		}
 		return response;
 	}
 
@@ -196,14 +192,6 @@ public class Receiver {
 		}
 		city.setId(id);
 		return add(city);
-	}
-
-	public String save(TreeSet<City> collection){
-
-		WorkWithFile worker = new WorkWithFile();
-
-		return worker.writeInFile(collection);
-
 	}
 
 	public void clearResponse(){

@@ -1,8 +1,9 @@
 package base;
 
+import java.io.Serializable;
 import java.time.ZonedDateTime;
 
-public class Human {
+public class Human implements Serializable {
 
 	private String name; //Поле не может быть null, Строка не может быть пустой
 	private Integer height; //Значение поля должно быть больше 0

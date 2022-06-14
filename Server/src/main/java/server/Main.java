@@ -9,6 +9,8 @@ import java.util.Scanner;
 import java.util.TreeSet;
 
 public class Main {
+	private static final Receiver receiver = new Receiver();
+	private static final Invoker invoker = new Invoker(receiver);
 	public static void main(String[] args) {
 		Server server = new Server();
 
@@ -17,9 +19,7 @@ public class Main {
 			if (request == null){
 				continue;
 			}
-			System.out.println("Клиент прислал команду: " + request.getCommandName());
-			Response response = new Response();
-			response.setMessage("Кто прочитал тот лох");
+			Response response = invoker.execute(request);
 			server.send(response, request.getClientAdress());
 		}
 

@@ -20,7 +20,7 @@ public class Help implements Command {
 	public Response execute(Request request) {
 		String[] commandshelp = (String[]) commandMap.values().stream()
 				.map(Command::getHelp)
-				.toArray();
+				.toArray(String[]::new);
 		Response reaction = new Response();
 		reaction.setAnswer(commandshelp);
 		return reaction;

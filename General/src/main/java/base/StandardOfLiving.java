@@ -1,6 +1,8 @@
 package base;
 
-public enum StandardOfLiving {
+import java.io.Serializable;
+
+public enum StandardOfLiving implements Serializable {
 
 	ULTRA_HIGH("Очень высокий"),
 	HIGH("Высокий"),

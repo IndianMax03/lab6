@@ -1,6 +1,8 @@
 package base;
 
-public class Coordinates {
+import java.io.Serializable;
+
+public class Coordinates implements Serializable {
 
 	private Double x; //Поле не может быть null
 	private Double y; //Значение поля должно быть больше -628, Поле не может быть null

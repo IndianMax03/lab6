@@ -15,7 +15,7 @@ public class AddIfMin implements Command {
 
 	@Override
 	public Response execute(Request request) {
-		receiver.clearResponse();
+		this.receiver.clearResponse();
 		return receiver.addIfMin(request.getCity());
 	}
 
