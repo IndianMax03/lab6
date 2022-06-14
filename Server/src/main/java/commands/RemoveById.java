@@ -21,7 +21,6 @@ public class RemoveById implements Command {
 
 	@Override
 	public String getHelp() {
-		return "Введите info, чтобы вывести в стандартный поток вывода информацию о коллекции (тип, дата инициализации," +
-				" количество элементов)";
+		return "Введите remove_by_id id, чтобы удалить элемент из коллекции по его id";
 	}
 }

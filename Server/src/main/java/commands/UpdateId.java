@@ -21,6 +21,6 @@ public class UpdateId implements Command {
 
 	@Override
 	public String getHelp() {
-		return "Введите update id {element}, чтобы обновить значение элемента коллекции, id которого равен заданному";
+		return "Введите update_id {element}, чтобы обновить значение элемента коллекции, id которого равен заданному";
 	}
 }

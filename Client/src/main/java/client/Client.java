@@ -21,12 +21,15 @@ public class Client {
 		try{
 			host = InetAddress.getLocalHost();
 			socket = new DatagramSocket();
+			socket.setSoTimeout(7000); //  todo
 			System.out.println("Клиентский модуль начал работу...");
 		} catch (SocketException e) {
-			e.printStackTrace();
+			System.out.println("Ошибка соединения.");
+			System.exit(-1);
 		}
 		catch (UnknownHostException e) {
-			e.printStackTrace();
+			System.out.println("Ошибка подключения: хост не найден.");
+			System.exit(-1);
 		}
 	}
 
@@ -40,10 +43,10 @@ public class Client {
 			Response response = (Response) ois.readObject();
 			return response;
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("Ошибка чтения. Пакет не может быть получен.");;
 			return null;
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			System.out.println("Ошибка чтения. Нарушен класс читаемого объекта.");
 			return null;
 		}
 	}
@@ -55,9 +58,8 @@ public class Client {
 			ObjectOutputStream oos = new ObjectOutputStream(baos);
 			oos.writeObject(request);
 			socket.send(new DatagramPacket(baos.toByteArray(), baos.toByteArray().length, InetAddress.getLocalHost(), PORT));
-
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("Ошибка доставки. Запрос не может быть доставлен");
 		}
 	}
 

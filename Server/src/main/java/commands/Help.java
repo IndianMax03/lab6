@@ -18,7 +18,7 @@ public class Help implements Command {
 
 	@Override
 	public Response execute(Request request) {
-		String[] commandshelp = (String[]) commandMap.values().stream()
+		String[] commandshelp = commandMap.values().stream()
 				.map(Command::getHelp)
 				.toArray(String[]::new);
 		Response reaction = new Response();

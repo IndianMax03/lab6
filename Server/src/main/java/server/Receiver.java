@@ -2,7 +2,6 @@ package server;
 
 import base.City;
 import base.Government;
-import commands.Command;
 import listening.Response;
 
 import java.time.ZonedDateTime;
@@ -13,19 +12,12 @@ import java.util.TreeSet;
  */
 public class Receiver {
 
-	private final long ID = 0;
+	private long ID = 1L;
 	private TreeSet<City> collection = new TreeSet<>();
 	private Response response = new Response();
 	private final ZonedDateTime creationDate;
-
-
 	public Receiver(){
 		creationDate = ZonedDateTime.now();
-	}
-
-	public String exit(){ //  todo
-		System.out.println("Спасибо за работу, до свидания!");
-		return null;
 	}
 
 	public Response clear(){
@@ -39,7 +31,7 @@ public class Receiver {
 	}
 
 	public Response add(City city){
-		city.setId(this.ID + collection.size());
+		city.setId(this.ID++);
 		city.setCreationDate(ZonedDateTime.now());
 		if (!collection.add(city)) {
 			response.setMessage("Город добавить не удалось. Коллекция TreeSet не предполагает хранение одинаковых объектов.");
@@ -183,15 +175,29 @@ public class Receiver {
 
 	public Response updateId(String idArgument, City city){
 		long id = Long.parseLong(idArgument);
+		City maybeDel = null;
 		long before = collection.size();
-		collection.removeIf(sity -> city.getId().equals(id));
+		for (City sity : collection){
+			if (sity.getId().equals(id)){
+				collection.remove(sity);
+				maybeDel = sity;
+				break;
+			}
+		}
 		long after = collection.size();
-		if (before == after){
-			response.setMessage("Элемента с заданным id не существует. Город не будет добавлен.");
+		if (before == after) {
+			response.setMessage("Элемента с заданным id не существует. Город не будет обновлён.");
 			return response;
 		}
 		city.setId(id);
-		return add(city);
+		city.setCreationDate(ZonedDateTime.now());
+		if (!collection.add(city)) {
+			response.setMessage("Город не удалось изменить. Коллекция TreeSet не предполагает хранение одинаковых объектов.");
+			collection.add(maybeDel);
+		} else {
+			response.setMessage("Город с id = " + id + " успешно изменён.");
+		}
+		return response;
 	}
 
 	public void clearResponse(){
