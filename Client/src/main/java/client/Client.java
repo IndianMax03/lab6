@@ -43,7 +43,7 @@ public class Client {
 			Response response = (Response) ois.readObject();
 			return response;
 		} catch (IOException e) {
-			System.out.println("Ошибка чтения. Пакет не может быть получен.");;
+			System.out.println("Ошибка чтения. Сервер не отвечает.");;
 			return null;
 		} catch (ClassNotFoundException e) {
 			System.out.println("Ошибка чтения. Нарушен класс читаемого объекта.");

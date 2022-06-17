@@ -8,8 +8,7 @@ import listening.Response;
 import java.io.IOException;
 import java.util.Scanner;
 
-// todo На сервере доделать чтение из консоли (сохранение в файл)
-// todo На клиенте доделать команду execute_script и обработку недоступности сервера
+// todo На клиенте доделать обработку недоступности сервера
 
 public class Main {
 	private static final Receiver receiver = new Receiver();
