@@ -1,5 +1,6 @@
 package server;
 
+import fileworker.WorkWithFile;
 import listening.Request;
 import listening.Response;
 
@@ -50,7 +51,7 @@ public class Server {
 		}
 	}
 
-	public void send(Response response, SocketAddress clientAdress){
+	public static void send(Response response, SocketAddress clientAdress){
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try{
 

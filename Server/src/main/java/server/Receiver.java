@@ -2,6 +2,7 @@ package server;
 
 import base.City;
 import base.Government;
+import fileworker.WorkWithFile;
 import listening.Response;
 
 import java.time.ZonedDateTime;
@@ -200,9 +201,19 @@ public class Receiver {
 		return response;
 	}
 
+	public Response save(){
+		WorkWithFile worker = new WorkWithFile();
+		response.setMessage("Сообщение от сервера: " + worker.writeInFile(collection));
+		return response;
+	}
+
 	public void clearResponse(){
 		this.response.setMessage(null);
 		this.response.setAnswer(null);
+	}
+
+	public TreeSet<City> getCollection(){
+		return this.collection;
 	}
 
 }

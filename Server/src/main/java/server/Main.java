@@ -1,20 +1,29 @@
 package server;
 
-import base.City;
+import com.opencsv.exceptions.CsvValidationException;
+import fileworker.WorkWithFile;
 import listening.Request;
 import listening.Response;
 
 import java.io.IOException;
 import java.util.Scanner;
-import java.util.TreeSet;
+
+// todo На сервере доделать чтение из консоли (сохранение в файл)
+// todo На клиенте доделать команду execute_script и обработку недоступности сервера
 
 public class Main {
 	private static final Receiver receiver = new Receiver();
 	private static final Invoker invoker = new Invoker(receiver);
 	public static void main(String[] args) throws IOException {
 		Server server = new Server();
+		try {
+			WorkWithFile.fillTheCollection(receiver.getCollection());
+		} catch (CsvValidationException e) {
+			System.out.println("Ошибка валидации csv файла со входной коллекцией.");
+		}
 
 		while (true) {
+
 			if (System.in.available() > 0) {
 				String servcomment;
 				try {
